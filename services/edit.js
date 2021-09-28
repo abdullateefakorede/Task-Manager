@@ -14,9 +14,13 @@ class editService {
         return myToDos.filter(element => element.id === id);
     }
 
-    static idIndex(id, userId) {
+    static userToDoIndex(id, userId) {
         const myToDos = eachUserToDos(userId);
         return myToDos.findIndex(element => element.id === id);
+    }
+
+    static idIndex(id) {
+        return allToDo.findIndex(element => element.id === id);
     }
 
     static dateExist(date) {

@@ -32,7 +32,7 @@ class editController {
     }
 
     static editToDo = (req, res) => {
-        const idIndex = editService.idIndex(req.params.id, req.session.userId);
+        const idIndex = editService.idIndex(req.params.id);
         const indexData = allToDo[idIndex];
         if (!signedIn(req.session.userId)) {
             return res.status(404).json({

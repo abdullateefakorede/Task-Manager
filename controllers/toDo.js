@@ -23,6 +23,7 @@ class toDo {
             success: true,
             message: "Fetching Suuccesful",
             data: toDoService.formatArray(myToDos)
+                // data: myToDos
         })
 
     }
