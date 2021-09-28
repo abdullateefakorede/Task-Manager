@@ -1,15 +1,13 @@
 const express = require("express");
 const app = express();
-const add = require('./routes/add')
 const signin = require('./routes/signin')
 const signup = require('./routes/signup')
+const todos = require('./routes/todos')
 const cookieParser = require('cookie-parser')
 const session = require("express-session")
 const multer = require('multer');
+const userController = require("./controllers/usercontroller");
 const upload = multer();
-const { toDoCallBack } = require('./controllers/toDoController')
-const { toDoValidator } = require('./controllers/addController');
-const editController = require("./controllers/editController");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,14 +19,11 @@ app.use(session({
     saveUninitialized: false
 }));
 
-app.use('/add', add)
 app.use('/signin', signin)
 app.use('/signup', signup)
-app.get("/todo", toDoCallBack)
-app.post("/todo", toDoCallBack)
+app.use('/todos', todos)
+app.post('/signout', userController.signout)
 
-app.get("/edit/:id", editController.getEdit)
-
-app.post("/edit/:id", editController.toDoEdit)
-
-app.listen(process.env.PORT || 3001)
+app.listen(process.env.PORT || 3001, function() {
+    console.log(`Your server is running on ${process.env.PORT || 3001}`);
+})

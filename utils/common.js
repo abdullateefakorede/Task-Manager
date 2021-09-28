@@ -1,3 +1,5 @@
+const allToDo = require("../data.json")
+
 function randomFunction(value) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
     let result = '';
@@ -8,4 +10,9 @@ function randomFunction(value) {
     return result;
 }
 
+function eachUserToDos(id) {
+    return allToDo.filter(user => user.userId === id)
+}
+
 exports.randomFunction = randomFunction;
+exports.eachUserToDos = eachUserToDos;

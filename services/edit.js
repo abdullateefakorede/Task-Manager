@@ -1,12 +1,22 @@
 const allToDo = require("../data.json");
+const { eachUserToDos } = require("../utils/common");
+
+
 class editService {
 
-    static getToDo(id) {
-        return allToDo.filter(element => element.id === id);
+    static isMyToDo(id, userId) {
+        const toDo = allToDo.find(element => element.id === id);
+        return toDo.userId === userId;
     }
 
-    static idIndex(id) {
-        return allToDo.findIndex(element => element.id === id);
+    static getToDo(id, userId) {
+        const myToDos = eachUserToDos(userId);
+        return myToDos.filter(element => element.id === id);
+    }
+
+    static idIndex(id, userId) {
+        const myToDos = eachUserToDos(userId);
+        return myToDos.findIndex(element => element.id === id);
     }
 
     static dateExist(date) {

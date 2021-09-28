@@ -12,7 +12,12 @@ class userService {
         }
     }
 
-}
+    static signedIn(id) {
+        if (id) {
+            return true
+        }
+    }
 
+}
 
 module.exports = userService;
