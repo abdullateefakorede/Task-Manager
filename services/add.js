@@ -1,4 +1,4 @@
-class addService {
+class AddService {
     static addToDoVerified(name, date) {
         if (!name || (date < Date.now())) {
             return false;
@@ -12,4 +12,4 @@ class addService {
 }
 
 
-module.exports = addService;
+module.exports = AddService;

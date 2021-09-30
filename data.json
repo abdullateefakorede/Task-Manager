@@ -1,5 +1,4 @@
-[
-    {
+[{
         "name": "Tour",
         "dueAt": "NIL",
         "created": "2021-09-27T16:44:22.924Z",
@@ -7,14 +6,7 @@
         "id": "NTlLY",
         "userId": "bQFX"
     },
-    {
-        "name": "Test Me",
-        "dueAt": "NIL",
-        "created": "2021-09-27T16:44:56.533Z",
-        "completed": true,
-        "id": "aan55",
-        "userId": "bQFX"
-    },
+
     {
         "name": "Tour Me",
         "dueAt": "NIL",
@@ -27,7 +19,7 @@
         "name": "Kobo List",
         "dueAt": "NIL",
         "created": "2021-09-28T17:31:30.510Z",
-        "completed": true,
+        "completed": false,
         "id": "5d2rd",
         "userId": "b9qK"
     },

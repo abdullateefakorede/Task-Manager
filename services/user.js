@@ -1,6 +1,7 @@
 const usersList = require("../users.json");
+const allToDo = require("../data.json");
 
-class userService {
+class UserService {
 
     static findUser(username) {
         return usersList.find(user => username === user.username)
@@ -12,12 +13,10 @@ class userService {
         }
     }
 
-    static signedIn(id) {
-        if (id) {
-            return true
-        }
+    static fetchUserToDos(id) {
+        return allToDo.filter(user => user.userId === id)
     }
 
 }
 
-module.exports = userService;
+module.exports = UserService;

@@ -1,12 +1,19 @@
-class toDoService {
+class ToDoService {
 
-    static formatComplete = (complete) => complete ? 'Yes' : 'No'
+    static isToDoComplete = (complete) => complete ? 'Yes' : 'No'
 
-    static formatArray(array) {
-        const trueArray = array.filter(element => element.completed === true)
-        const falseArray = array.filter(element => element.completed === false)
-        return falseArray.concat(trueArray);
+    static sortToDos(toDos) {
+        return toDos.sort((a) => {
+            if (a.completed) {
+                return 1;
+            }
+            if (!a.completed) {
+                return -1;
+            }
+            return 0;
+        })
+
     }
 }
 
-module.exports = toDoService;
+module.exports = ToDoService;

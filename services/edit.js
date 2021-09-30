@@ -1,25 +1,20 @@
 const allToDo = require("../data.json");
-const { eachUserToDos } = require("../utils/common");
+const UserService = require("./user");
 
 
-class editService {
+class EditService {
 
     static isMyToDo(id, userId) {
         const toDo = allToDo.find(element => element.id === id);
         return toDo.userId === userId;
     }
 
-    static getToDo(id, userId) {
-        const myToDos = eachUserToDos(userId);
-        return myToDos.filter(element => element.id === id);
+    static getToDoById(id, userId) {
+        const userToDos = UserService.fetchUserToDos(userId);
+        return userToDos.filter(element => element.id === id);
     }
 
-    static userToDoIndex(id, userId) {
-        const myToDos = eachUserToDos(userId);
-        return myToDos.findIndex(element => element.id === id);
-    }
-
-    static idIndex(id) {
+    static getToDoIndex(id) {
         return allToDo.findIndex(element => element.id === id);
     }
 
@@ -35,4 +30,4 @@ class editService {
     }
 }
 
-module.exports = editService;
+module.exports = EditService;
