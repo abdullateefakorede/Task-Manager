@@ -1,4 +1,4 @@
-const addService = require("../services/add");
+const ToDoService = require("../services/todo");
 
 class validators {
 
@@ -6,7 +6,7 @@ class validators {
         const dueAt = new Date(req.body.dueAt) || Date.now();
         const name = req.body.name;
 
-        if (!addService.addToDoVerified(name, dueAt)) {
+        if (!ToDoService.addToDoVerified(name, dueAt)) {
             return res.status(400).json({
                 success: false,
                 message: "Sorry, make sure your inputs are valid"

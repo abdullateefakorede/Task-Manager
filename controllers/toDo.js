@@ -1,13 +1,9 @@
-const addService = require("../services/add");
 const ToDoService = require("../services/todo");
 const { writeFileSync } = require("fs");
 const path = require('path');
 const toDos = require("../data.json");
 const { generateRandomId } = require("../utils/common");
 const UserService = require("../services/user");
-const EditService = require("../services/edit")
-const { isMyToDo } = require("../services/edit");;
-
 
 class ToDoController {
 
@@ -35,7 +31,7 @@ class ToDoController {
         const createDate = new Date();
         const randomID = generateRandomId(5);
 
-        if (addService.dateExist(req.body.dueAt)) {
+        if (req.body.dueAt) {
             const dueDate = new Date(req.body.dueAt);
             Object.assign(requestDetails, { dueAt: dueDate.toISOString() })
         } else {
@@ -48,9 +44,7 @@ class ToDoController {
             created: createDate.toISOString(),
             userId: req.session.userId || null
         };
-        toDos.push(toDoDetails);
-        const dataPath = path.join(process.cwd(), 'data.json')
-        writeFileSync(dataPath, JSON.stringify(toDos, null, 4))
+        ToDoService.createToDo(toDoDetails)
         const dataIndex = toDos.findIndex(todo => todo.id === randomID)
         return res.status(200).json({
             success: true,
@@ -60,7 +54,7 @@ class ToDoController {
     }
 
     static getToDoDetails = (req, res) => {
-        const foundToDo = EditService.getToDoById(req.params.id, req.session.userId)
+        const foundToDo = ToDoService.getToDoById(req.params.id, req.session.userId)
 
         if (foundToDo.length === 0) {
             return res.status(404).json({
@@ -76,21 +70,21 @@ class ToDoController {
     }
 
     static editToDo = (req, res) => {
-        const idIndex = EditService.getToDoIndex(req.params.id);
+        const idIndex = ToDoService.getToDoIndex(req.params.id);
         const indexData = toDos[idIndex];
 
-        if (!isMyToDo(req.params.id, req.session.userId)) {
+        if (!ToDoService.isMyToDo(req.params.id, req.session.userId)) {
             return res.status(404).json({
                 success: false,
                 message: "You have no right to update this To-Do"
             })
         }
 
-        if (EditService.dateExist(req.body.dueDate)) {
+        if (req.body.dueDate) {
             const dueAt = new Date(req.body.dueAt);
             indexData.dueAt = dueAt.toISOString();
         }
-        if (EditService.toDoCompleted(req.body.completed)) {
+        if (ToDoService.toDoCompleted(req.body.completed)) {
             indexData.completed = true;
         } else {
             indexData.completed = false;
