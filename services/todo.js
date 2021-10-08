@@ -26,7 +26,7 @@ class ToDoService {
     }
 
     static isMyToDo(id, userId) {
-        const toDo = allToDo.find(element => element.id === id);
+        const toDo = toDos.find(element => element.id === id);
         return toDo.userId === userId;
     }
 
@@ -36,7 +36,7 @@ class ToDoService {
     }
 
     static getToDoIndex(id) {
-        return allToDo.findIndex(element => element.id === id);
+        return toDos.findIndex(element => element.id === id);
     }
 
     static toDoCompleted(completed) {
@@ -46,10 +46,18 @@ class ToDoService {
         return false
     }
 
-    static createToDo(toDo) {
-        toDos.push(toDo);
+    static createToDo(todo) {
+        toDos.push(todo);
         const dataPath = path.join(process.cwd(), 'data.json')
         writeFileSync(dataPath, JSON.stringify(toDos, null, 4))
+    }
+
+    static formatToDos(todos) {
+        return todos.map(todo => {
+            var todos = {...todo }
+            delete todos.userId
+            return todos
+        })
     }
 }
 

@@ -1,17 +1,7 @@
-const express = require('express');
-const app = express();
 const bcrypt = require("bcrypt")
 const userService = require("../services/user");
 const { generateRandomId } = require("../utils/common");
-const session = require("express-session");
-const cookieParser = require("cookie-parser");
-
-app.use(cookieParser());
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'Your Secret Key',
-    resave: false,
-    saveUninitialized: false
-}));
+const TokenService = require("../services/token");
 
 class UserController {
 
@@ -26,11 +16,14 @@ class UserController {
                 message: "Invalid Username or Password!"
             })
         }
-
-        req.session.userId = user.id;
+        const data = { username: user.username, id: user.id }
+        const token = TokenService.generateToken({ user: data })
+        const decoded = TokenService.decodeToken(token)
+        req.user = user;
         return res.status(200).json({
             success: true,
-            message: "Login Successful!"
+            message: "Login Successful!",
+            data: decoded.user
         })
     }
 
@@ -57,13 +50,12 @@ class UserController {
     }
 
     static signout(req, res) {
-        req.session.destroy(function() {
-            console.log("user logged out.")
-            return res.status(200).json({
-                success: true,
-                message: "You have successfully logged out"
-            })
-        });
+        req.user = "";
+        console.log("user logged out.")
+        return res.status(200).json({
+            success: true,
+            message: "You have successfully logged out"
+        })
     }
 }
 

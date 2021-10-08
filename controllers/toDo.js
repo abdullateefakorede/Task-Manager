@@ -8,9 +8,9 @@ const UserService = require("../services/user");
 class ToDoController {
 
     static allToDo = (req, res) => {
-        const myToDos = UserService.fetchUserToDos(req.session.userId);
+        const myToDos = UserService.fetchUserToDos(req.user.id);
 
-        if (!req.session.userId) {
+        if (!req.user.id) {
             return res.status(404).json({
                 success: false,
                 message: "Please login!"
@@ -20,7 +20,7 @@ class ToDoController {
         res.status(200).json({
             success: true,
             message: "Fetching Suuccesful",
-            data: ToDoService.sortToDos(myToDos)
+            data: ToDoService.sortToDos(ToDoService.formatToDos(myToDos))
 
         })
 
@@ -42,7 +42,7 @@ class ToDoController {
             id: randomID,
             completed: false,
             created: createDate.toISOString(),
-            userId: req.session.userId || null
+            userId: req.user.id || null
         };
         ToDoService.createToDo(toDoDetails)
         const dataIndex = toDos.findIndex(todo => todo.id === randomID)
@@ -54,7 +54,7 @@ class ToDoController {
     }
 
     static getToDoDetails = (req, res) => {
-        const foundToDo = ToDoService.getToDoById(req.params.id, req.session.userId)
+        const foundToDo = ToDoService.getToDoById(req.params.id, req.user.id)
 
         if (foundToDo.length === 0) {
             return res.status(404).json({
@@ -73,7 +73,7 @@ class ToDoController {
         const idIndex = ToDoService.getToDoIndex(req.params.id);
         const indexData = toDos[idIndex];
 
-        if (!ToDoService.isMyToDo(req.params.id, req.session.userId)) {
+        if (!ToDoService.isMyToDo(req.params.id, req.user.id)) {
             return res.status(404).json({
                 success: false,
                 message: "You have no right to update this To-Do"
