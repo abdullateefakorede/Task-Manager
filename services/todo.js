@@ -25,7 +25,7 @@ class ToDoService {
 
     static async isMyToDo(id, userId) {
         const toDo = await Todo.find({ id }).exec();
-        return toDo.userId === userId;
+        return toDo[0].userId === userId;
     }
 
     static getToDoById(id) {

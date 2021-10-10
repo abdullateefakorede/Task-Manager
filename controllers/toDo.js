@@ -75,7 +75,7 @@ class ToDoController {
             })
         }
 
-        if (!ToDoService.isMyToDo(req.params.id, req.user.id)) {
+        if (!await ToDoService.isMyToDo(req.params.id, req.user.id)) {
             return res.status(404).json({
                 success: false,
                 message: "You have no right to update this To-Do"
