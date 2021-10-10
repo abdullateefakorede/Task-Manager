@@ -1,13 +1,11 @@
-const { writeFileSync } = require("fs");
-const path = require('path');
-const toDos = require("../data.json");
+const { Todo } = require("../config/connection");
 
 class ToDoService {
 
     static isToDoComplete = (complete) => complete ? 'Yes' : 'No'
 
-    static sortToDos(toDos) {
-        return toDos.sort((a) => {
+    static sortToDos(todos) {
+        return todos.sort((a) => {
             if (a.completed) {
                 return 1;
             }
@@ -25,38 +23,30 @@ class ToDoService {
         return true
     }
 
-    static isMyToDo(id, userId) {
-        const toDo = toDos.find(element => element.id === id);
+    static async isMyToDo(id, userId) {
+        const toDo = await Todo.find({ id }).exec();
         return toDo.userId === userId;
     }
 
-    static getToDoById(id, userId) {
-        const userToDos = UserService.fetchUserToDos(userId);
-        return userToDos.filter(element => element.id === id);
+    static getToDoById(id) {
+        return Todo.where({ id });
     }
 
-    static getToDoIndex(id) {
-        return toDos.findIndex(element => element.id === id);
+    static async updateToDoById(id, todo) {
+        return await Todo.updateOne({ id }, todo).exec();
     }
 
-    static toDoCompleted(completed) {
-        if (completed === "yes" || completed === true) {
-            return true
-        }
-        return false
-    }
-
-    static createToDo(todo) {
-        toDos.push(todo);
-        const dataPath = path.join(process.cwd(), 'data.json')
-        writeFileSync(dataPath, JSON.stringify(toDos, null, 4))
+    static async createToDo(todo) {
+        var newTodo = new Todo(todo);
+        const savedTodo = await newTodo.save()
+        return savedTodo;
     }
 
     static formatToDos(todos) {
         return todos.map(todo => {
-            var todos = {...todo }
-            delete todos.userId
-            return todos
+            var formatTodo = {...todo }
+            delete formatTodo.userId
+            return formatTodo
         })
     }
 }

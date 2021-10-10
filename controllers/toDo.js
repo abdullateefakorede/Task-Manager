@@ -1,14 +1,11 @@
 const ToDoService = require("../services/todo");
-const { writeFileSync } = require("fs");
-const path = require('path');
-const toDos = require("../data.json");
 const { generateRandomId } = require("../utils/common");
 const UserService = require("../services/user");
 
 class ToDoController {
 
-    static allToDo = (req, res) => {
-        const myToDos = UserService.fetchUserToDos(req.user.id);
+    static allToDo = async(req, res) => {
+        const myToDos = await UserService.fetchUserToDos(req.user.id);
 
         if (!req.user.id) {
             return res.status(404).json({
@@ -20,7 +17,7 @@ class ToDoController {
         res.status(200).json({
             success: true,
             message: "Fetching Suuccesful",
-            data: ToDoService.sortToDos(ToDoService.formatToDos(myToDos))
+            data: ToDoService.sortToDos(myToDos)
 
         })
 
@@ -45,16 +42,15 @@ class ToDoController {
             userId: req.user.id || null
         };
         ToDoService.createToDo(toDoDetails)
-        const dataIndex = toDos.findIndex(todo => todo.id === randomID)
         return res.status(200).json({
             success: true,
             message: "To-Do Successfully Added",
-            data: toDos[dataIndex]
+            data: toDoDetails
         })
     }
 
     static getToDoDetails = (req, res) => {
-        const foundToDo = ToDoService.getToDoById(req.params.id, req.user.id)
+        const foundToDo = ToDoService.getToDoById(req.params.id)
 
         if (foundToDo.length === 0) {
             return res.status(404).json({
@@ -69,9 +65,15 @@ class ToDoController {
         })
     }
 
-    static editToDo = (req, res) => {
-        const idIndex = ToDoService.getToDoIndex(req.params.id);
-        const indexData = toDos[idIndex];
+    static editToDo = async(req, res) => {
+        const todo = await ToDoService.getToDoById(req.params.id);
+
+        if (todo <= 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Invalid ToDo Id"
+            })
+        }
 
         if (!ToDoService.isMyToDo(req.params.id, req.user.id)) {
             return res.status(404).json({
@@ -82,20 +84,19 @@ class ToDoController {
 
         if (req.body.dueDate) {
             const dueAt = new Date(req.body.dueAt);
-            indexData.dueAt = dueAt.toISOString();
+            todo[0].dueAt = dueAt.toISOString();
         }
-        if (ToDoService.toDoCompleted(req.body.completed)) {
-            indexData.completed = true;
+        if (req.body.completed) {
+            todo[0].completed = true;
         } else {
-            indexData.completed = false;
+            todo[0].completed = false;
         }
-        indexData.name = req.body.name || indexData.name;
-        const dataPath = path.join(process.cwd(), 'data.json');
-        writeFileSync(dataPath, JSON.stringify(toDos, null, 4));
+        todo[0].name = req.body.name || todo[0].name;
+        await ToDoService.updateToDoById(req.params.id, todo[0]);
         res.status(200).json({
             success: true,
             message: "Update made Succesfully ",
-            data: indexData
+            data: todo
         })
     }
 

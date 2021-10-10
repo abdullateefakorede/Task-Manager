@@ -8,7 +8,7 @@ class UserController {
     static async signIn(req, res) {
         const username = req.body.username;
         const password = req.body.password;
-        const user = userService.findUser(username);
+        const user = await userService.findUser(username);
 
         if (!user || !await bcrypt.compare(password, user.password)) {
             return res.status(401).json({
@@ -23,7 +23,10 @@ class UserController {
         return res.status(200).json({
             success: true,
             message: "Login Successful!",
-            data: decoded.user
+            data: {
+                token,
+                user: data
+            }
         })
     }
 
@@ -31,7 +34,7 @@ class UserController {
         const username = req.body.username;
         const password = await userService.hashPassword(req.body.password, 10)
         const randomID = generateRandomId(4);
-        if (userService.userExist(username)) {
+        if (await userService.findUser(username)) {
             return res.status(401).json({
                 success: false,
                 message: "User Already Exist! Try A Unique Username"

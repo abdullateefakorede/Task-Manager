@@ -16,6 +16,7 @@ class Auth {
         try {
             const decoded = TokenService.decodeToken(token)
             req.user = decoded.user
+            console.log(decoded);
             return next()
 
         } catch (err) {
