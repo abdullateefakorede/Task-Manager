@@ -16,13 +16,6 @@ class ToDoService {
         })
     }
 
-    static addToDoVerified(name, date) {
-        if (!name || (date < Date.now())) {
-            return false;
-        }
-        return true
-    }
-
     static async isMyToDo(id, userId) {
         const toDo = await Todo.find({ id }).exec();
         return toDo[0].userId === userId;
