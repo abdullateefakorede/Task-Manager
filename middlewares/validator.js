@@ -1,6 +1,6 @@
 const ToDoService = require("../services/todo");
 
-class validators {
+class Validators {
 
     static toDo = (req, res, next) => {
         const dueAt = new Date(req.body.dueAt) || Date.now();
@@ -58,4 +58,4 @@ class validators {
 
 }
 
-module.exports = validators;
+module.exports = Validators;
