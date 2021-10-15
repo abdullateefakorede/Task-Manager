@@ -16,7 +16,7 @@ class Validators {
 
         if (!success) {
             return res.status(400).json({
-                success: false,
+                success,
                 message: "Validation Error",
                 data: {errors}
             })
@@ -29,7 +29,7 @@ class Validators {
 
         if (!success) {
             return res.status(400).json({
-                success: false,
+                success,
                 message: "Validation Error",
                 data: {errors}
             })
