@@ -1,35 +1,3 @@
-const userSchema = {
-    "username": {
-        "required": true,
-        "type": "string",
-        "minLength": 4,
-        "maxLength": 15,
-        "allow_blank": false,
-    },
-    "password": {
-        "required": true,
-        "type": "string",
-        "minLength": 7,
-        "maxLength": 15,
-        "allow_blank": false,
-    },
-    "age": {
-        "type": "number",
-        "required": true,
-        "minimum": 4,
-        "maximum": 5,
-        // "greater_than": 13,
-        // "less_than": 12
-    },
-    "email": {
-        "required": true,
-        "type": "string",
-        "pattern": new RegExp("[a-z]+@\gmail\+.[a-z]{3}"),
-        "allow_blank": false
-    }
-}
-
-
 class Validator {
     static validate(data, dataSchema) {
         /**
@@ -70,14 +38,14 @@ class Validator {
                 })
             }
 
-            if (valueLength < schema.minLength) {
+            if (schema.hasOwnProperty("minLength") && valueLength < schema.minLength) {
                 errors.push({
                     key,
                     type: "minLength",
                     message: `${key} should be of a minimum length ${schema.minLength}`
                 })
             }
-            if (value < schema.minimum) {
+            if (schema.hasOwnProperty("minimum") && value < schema.minimum) {
                 errors.push({
                     key,
                     type: "minimum",
@@ -85,14 +53,14 @@ class Validator {
                 })
             }
 
-            if (valueLength > schema.maxLength) {
+            if (schema.hasOwnProperty("maxLength") && valueLength > schema.maxLength) {
                 errors.push({
                     key,
                     type: "maxLength",
                     message: `${key} should be of a maximum length ${schema.maxLength}`
                 })
             }
-            if (value > schema.maximum) {
+            if (schema.hasOwnProperty("maximum") && value > schema.maximum) {
                 errors.push({
                     key,
                     type: "maximum",
@@ -100,14 +68,14 @@ class Validator {
                 })
             }
 
-            if (value < schema.greater_than) {
+            if (schema.hasOwnProperty("greater_than") && value < schema.greater_than) {
                 errors.push({
                     key,
                     type: "greater_than",
                     message: `${key} should be greater than ${schema.greater_than}`
                 })
             }
-            if (value > schema.less_than) {
+            if (schema.hasOwnProperty("less_than") && value > schema.less_than) {
                 errors.push({
                     key,
                     type: "less_than",
@@ -123,24 +91,35 @@ class Validator {
                 })
             }
 
-            if (key === "email") {
-                if (!schema.pattern.test(value)) {
-                    errors.push({
-                        key,
-                        type: "pattern",
-                        message: `${key} should be a valid email address`
-                    })
+                if (schema.hasOwnProperty("format")) {
+                    if ( schema.format === "email") {
+                        const regEx = new RegExp("[a-z]+@\gmail\+.[a-z]{3}");
+                        if (!regEx.test(value)) {
+                                errors.push({
+                                key,
+                                type: "format",
+                                essage: `${key} should be a valid email address`
+                             })
+                        }
+                    }
+
+                    if ( schema.format === "date" || schema.format === "datetime") {
+                        const dateInstance = new Date(value);
+                        if (isNaN(dateInstance)) {
+                                errors.push({
+                                key,
+                                type: "format",
+                                essage: `${key} should be a valid ${schema.format}`
+                             })
+                        }
+                    }
                 }
-            }
-
         }
-
-        console.log(errors)
+        return {
+            success: errors.length === 0,
+            errors
+        }
     }
 }
-
-
-Validator.validate({ "username": "hassan", "email": "ade@gmail.com", "password": "hassan1", "age": 5 }, userSchema)
-
 
 module.exports = Validator;

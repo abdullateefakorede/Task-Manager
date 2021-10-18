@@ -1,56 +1,49 @@
-const ToDoService = require("../services/todo");
+const Validator = require("../services/validator");
+const { addTodoSchema, signInSchema, signUpSchema } = require("../utils/schemas");
 
 class Validators {
 
     static toDo = (req, res, next) => {
+        const {success, errors} = Validator.validate(req.body, addTodoSchema)
         const dueAt = new Date(req.body.dueAt) || Date.now();
-        const name = req.body.name;
 
-        if (!ToDoService.addToDoVerified(name, dueAt)) {
+        if (dueAt < Date.now()) {
             return res.status(400).json({
                 success: false,
-                message: "Sorry, make sure your inputs are valid"
+                message: "Sorry, Input a future date"
             })
         }
 
-        if (Object.keys(req.body).length === 2) {
-            if (!req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("dueAt")) {
-                return res.status(401).json({
-                    success: false,
-                    message: "Invalid Object Keys"
-                })
-            }
+        if (!success) {
+            return res.status(400).json({
+                success,
+                message: "Validation Error",
+                data: {errors}
+            })
         }
-
-        if (Object.keys(req.body).length === 1) {
-            if (!req.body.hasOwnProperty("name")) {
-                return res.status(401).json({
-                    success: false,
-                    message: "Invalid Object Keys"
-                })
-            }
-        }
-
         next();
     }
 
     static signin(req, res, next) {
+        const {success, errors} = Validator.validate(req.body, signInSchema)
 
-        if (Object.keys(req.body).length > 2 || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password")) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid Keys Submitted"
+        if (!success) {
+            return res.status(400).json({
+                success,
+                message: "Validation Error",
+                data: {errors}
             })
         }
         next();
     }
 
     static signup(req, res, next) {
-
-        if (Object.keys(req.body).length > 5 || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password") || !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("birthdate") || !req.body.hasOwnProperty("nationality")) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid Keys Submitted"
+        const {success, errors} = Validator.validate(req.body, signUpSchema)
+        if (!success) {
+            return res.status(400).json({
+                success,
+                message: "Validation Error",
+                data: {errors}
             })
         }
         next();
