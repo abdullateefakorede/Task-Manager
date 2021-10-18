@@ -8,7 +8,7 @@ exports.addTodoSchema = {
     "dueAt": {
         "required": false,
         "type": "string",
-        "minLength": 14,
+        "minLength": 8,
         "format": "datetime",
         "allow_blank": true
     }
