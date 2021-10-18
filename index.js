@@ -15,3 +15,5 @@ registerRoute(app);
 app.listen(process.env.PORT || 3001, function() {
     console.log(`Your server is running on ${process.env.PORT || 3001}`);
 })
+
+module.exports = app;
