@@ -1,7 +1,7 @@
 {
-    "name": "to-do-app",
+    "name": "task-manager",
     "version": "1.0.0",
-    "description": "An app that manages user's task",
+    "description": "An API that manages user's task",
     "main": "index.js",
     "dependencies": {
         "bcrypt": "^5.0.1",
